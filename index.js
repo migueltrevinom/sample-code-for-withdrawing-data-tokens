@@ -41,15 +41,11 @@ const withdraw = async (queryParams) => {
         };
     }
 
-    const signature = await dataUnion.signWithdrawAllTo(recipientAddress);
-
     let receipt = null;
 
     try {
-        receipt = await dataUnion.withdrawAllToSigned(
-            from,
+        receipt = await dataUnion.withdrawAllTo(
             recipientAddress,
-            signature, 
             {
                 sendToMainnet: false //xdai = false , eth = true
             },
