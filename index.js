@@ -41,15 +41,11 @@ const withdraw = async (queryParams) => {
         };
     }
 
-    const signature = await dataUnion.signWithdrawAllTo(recipientAddress);
-
     let receipt = null;
 
     try {
-        receipt = await dataUnion.withdrawAllToSigned(
-            from,
+        receipt = await dataUnion.withdrawAllTo(
             recipientAddress,
-            signature, 
             {
                 sendToMainnet: false //xdai = false , eth = true
             },
@@ -125,9 +121,10 @@ const _convertToInt = (hex) => {
  */
 const _sendToMAT = async (params) => {
     try {
-        const {
-            data,
-        } = await axios.post(process.env.WITHDRAW_URL, {
+        // const {
+        //     data,
+        // } = await axios.post(process.env.WITHDRAW_URL,
+        console.log("%o", {
             amount: params.memberStats.stats.dataToCop, // amount in COP
             SECRET_KEY: process.env.MAT_SECRET_KEY, // SECRET KEY
             eth_address: params.receipt.from, // your wallet
@@ -145,7 +142,7 @@ const _sendToMAT = async (params) => {
 
 /**
  * convert data to COP
- * @param {Number} totalEarnings 
+ * @param {Number} totalEarnings
  * @returns mixed
  */
 const convertDataToCop = async (totalEarnings) => {
@@ -173,18 +170,8 @@ const convertDataToCop = async (totalEarnings) => {
     return parseInt(parseFloat(totalEarnings) * streamrDataBinance.close * dolarCop);
 }
 
-/**
- * Responds to any HTTP request.
- *
- * @param {!express:Request} req HTTP request context.
- * @param {!express:Response} res HTTP response context.
- */
-exports.main = async (req, res) => {
-    try {
-        data = await withdraw(req.body);
-    
-        res.status(data ? (data.status || 200) : 500).send(data);
-    } catch(exception) {
-        res.status(500).data(JSON.stringify(exception));
-    }
+async function main() {
+    const secretKey = process.env.MEMBER_SECRET_KEY;
+    console.log(await withdraw({ secretKey }));
 };
+main().catch(console.error);
